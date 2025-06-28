@@ -6,7 +6,7 @@ const getSymbols = async (req, res) => {
         const targetUrl = "http://trading-access.infy.uk/get_symbols.php?i=1";
         
         // Enhanced browser configuration for deployment
-        browser = await puppeteer.launch({
+        const browserOptions = {
             headless: true,
             args: [
                 "--no-sandbox",
@@ -16,13 +16,19 @@ const getSymbols = async (req, res) => {
                 "--no-first-run",
                 "--no-zygote",
                 "--single-process",
-                "--disable-gpu"
-            ],
-            // Try to use installed Chrome first, fallback to bundled
-            executablePath: process.env.NODE_ENV === 'production' 
-                ? process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/google-chrome-stable'
-                : undefined
-        });
+                "--disable-gpu",
+                "--disable-background-timer-throttling",
+                "--disable-backgrounding-occluded-windows",
+                "--disable-renderer-backgrounding"
+            ]
+        };
+
+        // Only set executablePath if explicitly provided via environment variable
+        if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+            browserOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+        }
+
+        browser = await puppeteer.launch(browserOptions);
 
         const page = await browser.newPage();
         
