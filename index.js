@@ -1,4 +1,5 @@
 const express = require("express");
+require('dotenv').config();
 const puppeteer = require("puppeteer");
 const cors = require("cors");
 const symbolRouter = require('./routes/symbolRoutes');
